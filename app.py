@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
 
-# -----------------------------
+
 # Page config
 # -----------------------------
 st.set_page_config(
@@ -17,13 +17,13 @@ st.set_page_config(
 st.title("🚨 Insurance Claim Fraud Detection")
 st.write("Predict whether an insurance claim is **fraudulent** using a trained ML model.")
 
-# -----------------------------
+
 # Paths
 # -----------------------------
 BASE_DIR = Path(__file__).resolve().parent
 MODEL_DIR = BASE_DIR / "model"
 
-# -----------------------------
+
 # Load model & feature names
 # -----------------------------
 @st.cache_resource
@@ -44,7 +44,7 @@ def load_model():
 
 model, feature_names, threshold = load_model()
 
-# -----------------------------
+
 # Sidebar inputs
 # -----------------------------
 st.sidebar.header("🧾 Claim Details")
@@ -105,8 +105,8 @@ property_claim = st.sidebar.number_input("Property Claim", 0.0, 50000.0, 5000.0)
 vehicle_claim = st.sidebar.number_input("Vehicle Claim", 0.0, 80000.0, 30000.0)
 has_umbrella = st.sidebar.selectbox("Umbrella Policy", [0, 1])
 
-# -----------------------------
-# Build input dataframe (RAW)
+
+# Build input dataframe 
 # -----------------------------
 input_data = pd.DataFrame([{
     "months_as_customer": months_as_customer,
@@ -136,7 +136,7 @@ input_data = pd.DataFrame([{
     "has_umbrella": has_umbrella
 }])
 
-# -----------------------------
+
 # Prediction + SHAP
 # -----------------------------
 if st.button("🔍 Predict Fraud"):
@@ -155,7 +155,7 @@ if st.button("🔍 Predict Fraud"):
 
     st.caption(f"Decision Threshold: {threshold}")
 
-# -----------------------------
+
 # SHAP Explanation
 # -----------------------------
     st.subheader("🧠 SHAP Explanation (Why this prediction?)")
@@ -163,13 +163,13 @@ if st.button("🔍 Predict Fraud"):
     preprocessor = model.named_steps["preprocessor"]
     classifier = model.named_steps["classifier"]
 
-# Transform input (NO SMOTE)
+# Transform input
     input_processed = preprocessor.transform(input_data)
 
     explainer = shap.TreeExplainer(classifier)
     shap_values = explainer.shap_values(input_processed)
 
-# -----------------------------
+
 # Handle SHAP output correctly
 # -----------------------------
 
@@ -189,7 +189,7 @@ if st.button("🔍 Predict Fraud"):
             shap_values_sample = shap_values[0]          # already single output
             expected_value = explainer.expected_value
 
-# -----------------------------
+
 # Waterfall plot (SINGLE sample)
 # -----------------------------
     fig, ax = plt.subplots(figsize=(10, 6))
